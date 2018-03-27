@@ -1,0 +1,57 @@
+<html>
+<body>
+<input id="private">
+<input id="secret">
+<br>
+<input type="button" id="decrypt" value="decrypt">
+<input id="plaintext">
+<script>
+function $(s){return document.querySelector(s)};
+function text2bin(text){return new Uint8Array(atob(text).split('').map(function(a){return a.charCodeAt(0)}))};
+
+$('#decrypt').onclick=function(){
+
+	window.crypto.subtle.importKey(
+		"pkcs8", //can be "jwk" (public or private), "spki" (public only), or "pkcs8" (private only)
+		text2bin($('#private').value),
+		{   //these are the algorithm options
+			name: "RSA-OAEP",
+			hash: {name: "SHA-256"}, //can be "SHA-1", "SHA-256", "SHA-384", or "SHA-512"
+		},
+		true, //whether the key is extractable (i.e. can be used in exportKey)
+		["decrypt"] //"encrypt" or "wrapKey" for public key import or
+	)
+	.then(function(privateKey){
+		//returns a publicKey
+
+		var data=text2bin($('#secret').value);
+
+		window.crypto.subtle.decrypt(
+			{
+				name: "RSA-OAEP",
+				//label: Uint8Array([...]) //optional
+			},
+			privateKey, //from generateKey or importKey above
+			data //ArrayBuffer of the data
+		)
+		.then(function(decrypted){
+			//returns an ArrayBuffer containing the decrypted data
+			// console.log(new Uint8Array(decrypted));
+			var enc = new TextDecoder();
+			// console.log(enc.decode(decrypted));
+			$('#plaintext').value=enc.decode(decrypted);
+		})
+		.catch(function(err){
+			console.error(err);
+		});
+
+	})
+	.catch(function(err){
+		console.error(err);
+	});
+
+}
+
+</script>
+</body>
+</html>

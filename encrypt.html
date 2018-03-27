@@ -1,0 +1,56 @@
+<html>
+<body>
+<input id="public">
+<input id="plaintext">
+<br>
+<input type="button" id="encrypt" value="encrypt">
+<input id="secret">
+<script>
+function $(s){return document.querySelector(s)};
+function bin2text(bin){return btoa(String.fromCharCode(...new Uint8Array(bin)));}
+function text2bin(text){return new Uint8Array(atob(text).split('').map(function(a){return a.charCodeAt(0)}))};
+
+$('#encrypt').onclick=function(){
+
+	window.crypto.subtle.importKey(
+		"spki", //can be "jwk" (public or private), "spki" (public only), or "pkcs8" (private only)
+		text2bin($('#public').value),
+		{   //these are the algorithm options
+			name: "RSA-OAEP",
+			hash: {name: "SHA-256"}, //can be "SHA-1", "SHA-256", "SHA-384", or "SHA-512"
+		},
+		false, //whether the key is extractable (i.e. can be used in exportKey)
+		["encrypt"] //"encrypt" or "wrapKey" for public key import or
+	)
+	.then(function(publicKey){
+		//returns a publicKey
+
+		var enc = new TextEncoder();
+		var message=enc.encode($('#plaintext').value);
+
+		window.crypto.subtle.encrypt(
+			{
+				name: "RSA-OAEP",
+				//label: Uint8Array([...]) //optional
+			},
+			publicKey, //from generateKey or importKey above
+			message //ArrayBuffer of data you want to encrypt
+		)
+		.then(function(encrypted){
+			//returns an ArrayBuffer containing the encrypted data
+			$('#secret').value=btoa(String.fromCharCode(...new Uint8Array(encrypted)));
+		})
+		.catch(function(err){
+			console.error(err);
+		});
+
+	})
+	.catch(function(err){
+		console.error(err);
+	});
+
+}
+
+</script>
+</body>
+</html>
