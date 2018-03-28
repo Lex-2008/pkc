@@ -1,8 +1,21 @@
 <html>
+<head>
+<style>
+input, textarea {
+    display: block;
+    width: 100%;
+}
+#private {background: palevioletred;}
+#public {background: lightgreen;}
+</style>
+</head>
 <body>
-<input type="button" id="generate" value="generate">
-<input id="public">
-<input id="private">
+<input type="button" id="generate" value="generate keypair">
+This is your PUBLIC key. Send it to sender and ask them to use <a href="encrypt.html">encrypt.html</a> to encrypt a message for you.
+<textarea id="public" readonly onfocus="this.select();"></textarea>
+This is your <b>PRIVATE</b> key. Do <b>not</b> send it to anyone! Instead, save it and use <a href="decrypt.html">decrypt.html</a> to decrypt an encrypted message.
+<textarea id="private" readonly onfocus="this.select();"></textarea>
+Note: These two keys form a pair: messages encrypted with above public key can be decrypted <b>only</b> with above private key.
 <script>
 function $(s){return document.querySelector(s)};
 function bin2text(bin){return btoa(String.fromCharCode(...new Uint8Array(bin)));}

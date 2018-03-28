@@ -1,10 +1,25 @@
 <html>
+<head>
+<style>
+input, textarea {
+    display: block;
+    width: 100%;
+}
+#public {background: lightgreen;}
+#plaintext {background: lightyellow;}
+#secret {background: lightblue;}
+</style>
+</head>
 <body>
-<input id="public">
-<input id="plaintext">
+Paste a PUBLIC key that receiver generated at <a href="generate.html">generate.html</a>:
+<textarea id="public" onfocus="this.select();"></textarea>
+Enter a secret message to them (max 62 chars EN or 32 chars RU):
+<input id="plaintext" maxlength="62">
 <br>
 <input type="button" id="encrypt" value="encrypt">
-<input id="secret">
+Here is your ENCRYPTED message:
+<textarea id="secret" readonly onfocus="this.select();"></textarea>
+Now, send it back to receiver and ask them to use <a href="decrypt.html">decrypt.html</a> to read it.
 <script>
 function $(s){return document.querySelector(s)};
 function bin2text(bin){return btoa(String.fromCharCode(...new Uint8Array(bin)));}

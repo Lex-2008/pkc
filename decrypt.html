@@ -1,10 +1,24 @@
 <html>
+<head>
+<style>
+input, textarea {
+    display: block;
+    width: 100%;
+}
+#private {background: palevioletred;}
+#plaintext {background: lightyellow;}
+#secret {background: lightblue;}
+</style>
+</head>
 <body>
-<input id="private">
-<input id="secret">
+Paste the PRIVATE key that you generated at <a href="generate.html">generate.html</a>:
+<textarea id="private" onfocus="this.select();"></textarea>
+Paste the message that sender ENCRYPTED at <a href="encrypt.html">encrypt.html</a>::
+<textarea id="secret" onfocus="this.select();"></textarea>
 <br>
 <input type="button" id="decrypt" value="decrypt">
-<input id="plaintext">
+Here is your secret message:
+<input id="plaintext" readonly onfocus="this.select();">
 <script>
 function $(s){return document.querySelector(s)};
 function text2bin(text){return new Uint8Array(atob(text).split('').map(function(a){return a.charCodeAt(0)}))};
