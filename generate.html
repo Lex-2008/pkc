@@ -19,6 +19,7 @@ Note: These two keys form a pair: messages encrypted with above public key can b
 <script>
 function $(s){return document.querySelector(s)};
 function bin2text(bin){return btoa(String.fromCharCode(...new Uint8Array(bin)));}
+function autosize(textarea){textarea.style.height = "";textarea.style.height = textarea.scrollHeight +3 + "px"};
 
 $('#generate').onclick=function(){
 
@@ -44,6 +45,7 @@ $('#generate').onclick=function(){
 			console.log('private',keydata);
 			// $('#private').value=keydata.n;
 			$('#private').value=bin2text(keydata);
+			autosize($('#private'));
 		})
 		.catch(function(err){
 			console.error(err);
@@ -58,6 +60,7 @@ $('#generate').onclick=function(){
 			//returns the exported key data
 			console.log('public',keydata);
 			$('#public').value=bin2text(keydata);
+			autosize($('#public'));
 		})
 		.catch(function(err){
 			console.error(err);

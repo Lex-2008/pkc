@@ -12,9 +12,9 @@ input, textarea {
 </head>
 <body>
 Paste the PRIVATE key that you generated at <a href="generate.html">generate.html</a>:
-<textarea id="private" onfocus="this.select();"></textarea>
+<textarea id="private" onfocus="this.select();" oninput='autosize(this)'></textarea>
 Paste the message that sender ENCRYPTED at <a href="encrypt.html">encrypt.html</a>::
-<textarea id="secret" onfocus="this.select();"></textarea>
+<textarea id="secret" onfocus="this.select();" oninput='autosize(this)'></textarea>
 <br>
 <input type="button" id="decrypt" value="decrypt">
 Here is your secret message:
@@ -22,6 +22,7 @@ Here is your secret message:
 <script>
 function $(s){return document.querySelector(s)};
 function text2bin(text){return new Uint8Array(atob(text).split('').map(function(a){return a.charCodeAt(0)}))};
+function autosize(textarea){textarea.style.height = "";textarea.style.height = textarea.scrollHeight +3 + "px"};
 
 $('#decrypt').onclick=function(){
 

@@ -12,7 +12,7 @@ input, textarea {
 </head>
 <body>
 Paste a PUBLIC key that receiver generated at <a href="generate.html">generate.html</a>:
-<textarea id="public" onfocus="this.select();"></textarea>
+<textarea id="public" onfocus="this.select();" oninput='autosize(this)'></textarea>
 Enter a secret message to them (max 62 chars EN or 32 chars RU):
 <input id="plaintext" maxlength="62">
 <br>
@@ -24,6 +24,7 @@ Now, send it back to receiver and ask them to use <a href="decrypt.html">decrypt
 function $(s){return document.querySelector(s)};
 function bin2text(bin){return btoa(String.fromCharCode(...new Uint8Array(bin)));}
 function text2bin(text){return new Uint8Array(atob(text).split('').map(function(a){return a.charCodeAt(0)}))};
+function autosize(textarea){textarea.style.height = "";textarea.style.height = textarea.scrollHeight +3 + "px"};
 
 $('#encrypt').onclick=function(){
 
@@ -54,6 +55,7 @@ $('#encrypt').onclick=function(){
 		.then(function(encrypted){
 			//returns an ArrayBuffer containing the encrypted data
 			$('#secret').value=btoa(String.fromCharCode(...new Uint8Array(encrypted)));
+			autosize($('#secret'));
 		})
 		.catch(function(err){
 			console.error(err);
