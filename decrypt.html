@@ -22,8 +22,8 @@ Here is your secret message:
 <p id="err-msg"></p>
 <script>
 function $(s){return document.querySelector(s)};
-function autosize(textarea){textarea.style.height = "";textarea.style.height = textarea.scrollHeight +3 + "px"};
 function text2bin(text){try {return new Uint8Array(atob(text).split('').map(function(a){return a.charCodeAt(0)}))}catch(err){displayError();}};
+function autosize(textarea){textarea.style.height = "";textarea.style.height = textarea.scrollHeight +3 + "px"};
 function displayError() {$('#plaintext').value="";$("#err-msg").innerHTML = "Sorry, an error occurred";}
 
 $('#decrypt').onclick=function(){
@@ -71,7 +71,6 @@ $('#decrypt').onclick=function(){
 	});
 
 }
-
 
 </script>
 </body>
