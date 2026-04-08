@@ -5,7 +5,8 @@ Thanks to [Web Cryptography][] API, you can use private key crypto right in your
 
 This set of pages lets you exchange private information with your friend using encrypted messages using only public channels
 (like, agreeing on meeting in some place on IRC).
-Codewise, this is mostly a compilation of few first examples from [webcrypto examples repo][].
+Originally, this was mostly a compilation of few first examples from [webcrypto examples repo][],
+but then i vibe-coded AES encryption to support secret text of arbitrary length.
 
 [Web Cryptography]: https://caniuse.com/#feat=cryptography
 [webcrypto examples repo]: https://github.com/diafygi/webcrypto-examples/

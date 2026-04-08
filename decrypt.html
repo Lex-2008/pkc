@@ -18,7 +18,7 @@ Paste the message that sender ENCRYPTED at <a href="encrypt.html">encrypt.html</
 <br>
 <input type="button" id="decrypt" value="decrypt">
 Here is your secret message:
-<input id="plaintext" readonly onfocus="this.select();">
+<textarea id="plaintext" readonly onfocus="this.select();"></textarea>
 <p id="err-msg"></p>
 <script>
 function $(s){return document.querySelector(s)};
@@ -26,9 +26,9 @@ function text2bin(text){try {return new Uint8Array(atob(text).split('').map(func
 function autosize(textarea){textarea.style.height = "";textarea.style.height = textarea.scrollHeight +3 + "px"};
 function displayError() {$('#plaintext').value="";$("#err-msg").innerHTML = "Sorry, an error occurred";}
 
-$('#decrypt').onclick=function(){
+$('#decrypt').onclick=async function(){
 
-	window.crypto.subtle.importKey(
+	privateKey = await crypto.subtle.importKey(
 		"pkcs8", //can be "jwk" (public or private), "spki" (public only), or "pkcs8" (private only)
 		text2bin($('#private').value),
 		{   //these are the algorithm options
@@ -37,38 +37,37 @@ $('#decrypt').onclick=function(){
 		},
 		true, //whether the key is extractable (i.e. can be used in exportKey)
 		["decrypt"] //"encrypt" or "wrapKey" for public key import or
-	)
-	.then(function(privateKey){
-		//returns a publicKey
+	);
 
-		var data=text2bin($('#secret').value);
+		const [iv, ciphertext, encryptedKey] = $('#secret').value.split(",").map(text2bin);
 
-		window.crypto.subtle.decrypt(
-			{
-                name: "RSA-OAEP",
-                //label: Uint8Array([...]) //optional
-			},
-			privateKey, //from generateKey or importKey above
-			data //ArrayBuffer of the data
-		)
-		.then(function(decrypted){
-			//returns an ArrayBuffer containing the decrypted data
-			// console.log(new Uint8Array(decrypted));
+		// Decrypt AES key
+		const rawKey = await crypto.subtle.decrypt(
+			{ name: "RSA-OAEP" },
+			privateKey,
+			encryptedKey
+		);
+
+		const aesKey = await crypto.subtle.importKey(
+			"raw",
+			rawKey,
+			{ name: "AES-GCM" },
+			false,
+			["decrypt"]
+		);
+
+		// Decrypt data
+		const decrypted = await crypto.subtle.decrypt(
+			{ name: "AES-GCM", iv },
+			aesKey,
+			ciphertext
+		);
+
 			var enc = new TextDecoder();
 			// console.log(enc.decode(decrypted));
 			$("#err-msg").innerHTML = "";
 			$('#plaintext').value=enc.decode(decrypted);
-		})
-		.catch(function(err){
-			console.error(err);
-			displayError();
-		});
-
-	})
-	.catch(function(err){
-		console.error(err);
-		displayError();
-	});
+			autosize($('#plaintext'));
 
 }
 
